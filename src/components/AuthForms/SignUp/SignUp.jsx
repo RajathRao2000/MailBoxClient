@@ -1,5 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../store/authSlice";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -7,9 +9,17 @@ import keys from "../../../keys";
 import classes from "./SignUp.module.css";
 
 const SignUp = () => {
+  const [isValid, setIsValid] = useState();
+  const dispatch = useDispatch();
+  const history = useHistory();
   const handleSubmit = async (e) => {
+    setIsValid();
     e.preventDefault();
-    console.log(e.target.email.value);
+    if (e.target.password.value != e.target.Cpassword.value) {
+      setIsValid(false);
+      alert("Passwords do not match");
+      return;
+    }
     try {
       const res = await fetch(`${keys.SignUpUrl}${keys.googleApiKey}`, {
         method: "post",
@@ -23,9 +33,15 @@ const SignUp = () => {
         }),
       });
       let data = await res.json();
-      console.log("data", data, data.error);
+      console.log("data", data);
       if (data.error) {
         alert(data.error.message);
+      } else {
+        e.target.email.value = "";
+        e.target.password.value = "";
+        e.target.Cpassword.value = "";
+        dispatch(authActions.signin({ ...data }));
+        history.replace("/welcome");
       }
     } catch (error) {
       console.log(error);
@@ -34,10 +50,19 @@ const SignUp = () => {
 
   return (
     <div className={`${classes["signup-form-container"]}`}>
-      <Form className={`${classes["signup-form"]}`} onSubmit={handleSubmit}>
+      <Form
+        noValidate
+        className={`${classes["signup-form"]}`}
+        onSubmit={handleSubmit}
+      >
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control name="email" type="email" placeholder="Enter email" />
+          <Form.Control
+            name="email"
+            type="email"
+            placeholder="abc@zyxw.com"
+            required
+          />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
@@ -45,14 +70,16 @@ const SignUp = () => {
             name="password"
             type="password"
             placeholder="Password"
+            required
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             name="Cpassword"
             type="password"
             placeholder="Confirm Password"
+            required
           />
         </Form.Group>
         <Button variant="primary" type="submit">

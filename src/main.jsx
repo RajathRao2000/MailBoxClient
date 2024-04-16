@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import {Provider} from "react-redux"
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import { store } from "./components/store/store.jsx";
