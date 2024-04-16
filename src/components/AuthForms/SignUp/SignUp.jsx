@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import keys from "../../../keys";
@@ -15,15 +17,15 @@ const SignUp = () => {
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          "email": e.target.email.value,
-          "password": e.target.password.value,
-          "returnSecureToken": true,
+          email: e.target.email.value,
+          password: e.target.password.value,
+          returnSecureToken: true,
         }),
       });
       let data = await res.json();
-      console.log("data", data,data.error);
-      if(data.error){
-        alert(data.error.message)
+      console.log("data", data, data.error);
+      if (data.error) {
+        alert(data.error.message);
       }
     } catch (error) {
       console.log(error);
@@ -32,7 +34,7 @@ const SignUp = () => {
 
   return (
     <div className={`${classes["signup-form-container"]}`}>
-      <Form onSubmit={handleSubmit}>
+      <Form className={`${classes["signup-form"]}`} onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control name="email" type="email" placeholder="Enter email" />
@@ -57,6 +59,11 @@ const SignUp = () => {
           Submit
         </Button>
       </Form>
+      <div className="form-msg ">
+        <p>
+          Have an account? <Link to="/signin">Login</Link>
+        </p>
+      </div>
     </div>
   );
 };

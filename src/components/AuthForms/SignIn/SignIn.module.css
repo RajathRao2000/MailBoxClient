@@ -1,0 +1,17 @@
+.signin-form-container{
+    /* width: auto;
+    max-width: 600px;
+    min-width:400px;
+    border: solid 2px;
+    padding: 40px;
+    border-radius: 20px; */
+  }
+
+.signin-form{
+  width: auto;
+  max-width: 600px;
+  min-width:400px;
+  border: solid 2px;
+  padding: 40px;
+  border-radius: 20px;
+}
