@@ -1,0 +1,32 @@
+.wrapper{
+    background-color: black;
+    padding: 20px;
+    /* height: 600px; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+
+}
+.editor{
+    background-color: white;
+    height: 100%;
+}
+.email-editor{
+    height: 100%;
+    padding: 40px;
+}
+
+.email-box{
+    height: 100%;
+}
+
+.compose{
+    height: inherit;
+    display: flex;
+    flex-direction: column;
+}
+
+.compose>button{
+    width: 200px;
+}

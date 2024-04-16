@@ -5,14 +5,15 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import DOMPurify from "dompurify";
-import keys from "../../../keys";
+import keys from "../../../../keys";
 
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
-import classes from "./Email.module.css";
+import classes from "./Compose.module.css";
+import { IoSend } from "react-icons/io5";
 
-const Email = () => {
+const Compose = () => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
@@ -32,36 +33,59 @@ const Email = () => {
 
   const sendEmail = async (e) => {
     e.preventDefault();
-    console.log(e.target);
     try {
-      const res = await fetch(`${keys.firebaseUrl}.json`, {
+      let urlmail = JSON.parse(localStorage.getItem("token")).Cemail;
+      const res = await fetch(`${keys.firebaseUrl}/${urlmail}/sent.json`, {
         method: "post",
         headers: {
           "content-type": "application/json",
         },
         body: JSON.stringify({
+          from: JSON.parse(localStorage.getItem("token")).email,
           to: e.target.to.value,
           subject: e.target.subject.value,
           emailBody: createMarkup(convertedContent),
+          date:(new Date()).toString()
         }),
       });
       let data = await res.json();
       console.log("data", data);
       if (data.error) {
         alert(data.error.message);
-      } else {
-
       }
     } catch (error) {
       console.log(error);
     }
+    try {
+      console.log(JSON.parse(localStorage.getItem("token")).email)
+        let urlmail = e.target.to.value.replace(/[.@]/g, "");
+        const res = await fetch(`${keys.firebaseUrl}/${urlmail}/inbox.json`, {
+          method: "post",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            from: JSON.parse(localStorage.getItem("token")).email,
+            to: e.target.to.value,
+            subject: e.target.subject.value,
+            emailBody: createMarkup(convertedContent),
+            date: (new Date()).toString()
+          }),
+        });
+        let data = await res.json();
+        console.log("data", data);
+        if (data.error) {
+          alert(data.error.message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
   };
 
-  //   console.log(convertedContent);
   return (
-    <div className="email-box">
+    <div className={classes["email-box"]}>
       <div className={classes["email-editor"]}>
-        <Form className={`{classes["signin-form"]}`} onSubmit={sendEmail}>
+        <Form className={`${classes["compose"]}`} onSubmit={sendEmail}>
           <Form.Group md="4" controlId="validationCustomUsername">
             <InputGroup hasValidation>
               <InputGroup.Text id="inputGroupPrepend">To:</InputGroup.Text>
@@ -100,11 +124,10 @@ const Email = () => {
             onEditorStateChange={setEditorState}
           />
           <Button variant="primary" type="submit">
-            Submit
+            Send <IoSend />
           </Button>
         </Form>
       </div>
-      {console.log(createMarkup(convertedContent))}
       <div
         className="preview"
         dangerouslySetInnerHTML={createMarkup(convertedContent)}
@@ -113,4 +136,4 @@ const Email = () => {
   );
 };
 
-export default Email;
+export default Compose;

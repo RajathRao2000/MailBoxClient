@@ -1,0 +1,11 @@
+.inbox-container{
+    padding: 40px;
+}
+
+.inbox-item{
+    border:solid 1px;
+    background-color: lightblue;
+    text-align: start;
+    padding: 10px;
+    border-radius: 10px;
+}

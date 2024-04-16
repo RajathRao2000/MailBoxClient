@@ -41,7 +41,7 @@ const SignUp = () => {
         e.target.password.value = "";
         e.target.Cpassword.value = "";
         dispatch(authActions.signin({ ...data }));
-        history.replace("/welcome");
+        history.replace("/main-page");
       }
     } catch (error) {
       console.log(error);
