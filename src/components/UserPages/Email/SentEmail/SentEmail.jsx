@@ -40,38 +40,11 @@ const SentEmail = () => {
   
       dispatch(sentEmailActions.setSentEmail({ inboxList: sentEmailList }));
     };
-  
-    // const setEmailRead = async (id, to) => {
-    //   const res = await fetch(
-    //     `${keys.firebaseUrl}/${to.replace(/[.@]/g, "")}/inbox/${id}.json`,
-    //     {
-    //       method: "PATCH",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({
-    //         unread: false,
-    //       }),
-    //     }
-    //   );
-    //   const data = await res.json();
-    //   console.log(data);
-    // };
-  
-    // const deleteItem = async (id, to) => {
-    //   const res = await fetch(
-    //     `${keys.firebaseUrl}/${to.replace(/[.@]/g, "")}/inbox/${id}.json`,
-    //     {
-    //       method: "DELETE",
-    //     }
-    //   );
-    //   console.log(id, to, res);
-    //   getSentEmails();
-  
-    // };
+
   
     useEffect(() => {
       getSentEmails();
+      setInterval(getSentEmails,2000)
     }, []);
     return (
       <div className={classes["inbox-container"]}>

@@ -76,6 +76,7 @@ const Inbox = () => {
 
   useEffect(() => {
     getInbox();
+    setInterval(getInbox,2000)
   }, []);
   return (
     <div className={classes["inbox-container"]}>
