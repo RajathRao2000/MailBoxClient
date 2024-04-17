@@ -23,9 +23,11 @@ function App() {
         <Route path={"/signin"}>
           <SignIn />
         </Route>
-        {auth.isAuthenticated && <Route path={"/main-page"}>
-          <MainPage />
-        </Route>}
+        {auth.isAuthenticated && (
+          <Route path={"/main-page"}>
+            <MainPage />
+          </Route>
+        )}
       </Body>
     </>
   );

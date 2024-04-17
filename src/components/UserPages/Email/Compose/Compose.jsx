@@ -12,8 +12,11 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import classes from "./Compose.module.css";
 import { IoSend } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { emailActions } from "../../../store/emailSlice";
 
 const Compose = () => {
+  const dispatch=useDispatch()
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
@@ -33,6 +36,14 @@ const Compose = () => {
 
   const sendEmail = async (e) => {
     e.preventDefault();
+    const bodyraw={
+      from: JSON.parse(localStorage.getItem("token")).email,
+      to: e.target.to.value,
+      subject: e.target.subject.value,
+      emailBody: createMarkup(convertedContent),
+      date:(new Date()).toString(),
+      unread: true
+    }
     try {
       let urlmail = JSON.parse(localStorage.getItem("token")).Cemail;
       const res = await fetch(`${keys.firebaseUrl}/${urlmail}/sent.json`, {
@@ -40,13 +51,7 @@ const Compose = () => {
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify({
-          from: JSON.parse(localStorage.getItem("token")).email,
-          to: e.target.to.value,
-          subject: e.target.subject.value,
-          emailBody: createMarkup(convertedContent),
-          date:(new Date()).toString()
-        }),
+        body: JSON.stringify(bodyraw),
       });
       let data = await res.json();
       console.log("data", data);
@@ -64,19 +69,17 @@ const Compose = () => {
           headers: {
             "content-type": "application/json",
           },
-          body: JSON.stringify({
-            from: JSON.parse(localStorage.getItem("token")).email,
-            to: e.target.to.value,
-            subject: e.target.subject.value,
-            emailBody: createMarkup(convertedContent),
-            date: (new Date()).toString()
-          }),
+          body: JSON.stringify(bodyraw),
         });
         let data = await res.json();
         console.log("data", data);
+
         if (data.error) {
           alert(data.error.message);
         }
+        console.log({...bodyraw,inboxid:data.name})
+      dispatch(emailActions.addEmail({...bodyraw,...data}))
+
       } catch (error) {
         console.log(error);
       }
@@ -128,10 +131,10 @@ const Compose = () => {
           </Button>
         </Form>
       </div>
-      <div
+      {/* <div
         className="preview"
         dangerouslySetInnerHTML={createMarkup(convertedContent)}
-      ></div>
+      ></div> */}
     </div>
   );
 };

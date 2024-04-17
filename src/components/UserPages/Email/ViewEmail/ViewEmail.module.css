@@ -1,0 +1,23 @@
+.email-display{
+    background-color: white;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.email-info{
+    display: flex;
+    flex-direction: column;
+    border: gray 1px solid;
+
+}
+
+.email-info>p{
+    margin:0;
+    font-style: italic;
+}
+
+.email-body{
+    min-height: 400px;
+    padding: 20px;
+}
