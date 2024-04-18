@@ -5,18 +5,16 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import DOMPurify from "dompurify";
-import keys from "../../../../keys";
 
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import classes from "./Compose.module.css";
 import { IoSend } from "react-icons/io5";
-import { useDispatch } from "react-redux";
-import { emailActions } from "../../../store/emailSlice";
+import useFirebaseAPI from "../../../customHooks/useFirebaseAPI";
 
 const Compose = () => {
-  const dispatch=useDispatch()
+  const { sendEmail } = useFirebaseAPI();
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
@@ -28,67 +26,20 @@ const Compose = () => {
 
     setConvertedContent(html);
   }, [editorState]);
+
   function createMarkup(html) {
     return {
       __html: DOMPurify.sanitize(html),
     };
   }
 
-  const sendEmail = async (e) => {
-    e.preventDefault();
-    const bodyraw={
-      from: JSON.parse(localStorage.getItem("token")).email,
-      to: e.target.to.value,
-      subject: e.target.subject.value,
-      emailBody: createMarkup(convertedContent),
-      date:(new Date()).toString(),
-      unread: true
-    }
-    try {
-      let urlmail = JSON.parse(localStorage.getItem("token")).Cemail;
-      const res = await fetch(`${keys.firebaseUrl}/${urlmail}/sent.json`, {
-        method: "post",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(bodyraw),
-      });
-      let data = await res.json();
-      console.log("data", data);
-      if (data.error) {
-        alert(data.error.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    try {
-      console.log(JSON.parse(localStorage.getItem("token")).email)
-        let urlmail = e.target.to.value.replace(/[.@]/g, "");
-        const res = await fetch(`${keys.firebaseUrl}/${urlmail}/inbox.json`, {
-          method: "post",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(bodyraw),
-        });
-        let data = await res.json();
-        console.log("data", data);
-
-        if (data.error) {
-          alert(data.error.message);
-        }
-        console.log({...bodyraw,inboxid:data.name})
-      dispatch(emailActions.addEmail({...bodyraw,...data}))
-
-      } catch (error) {
-        console.log(error);
-      }
-  };
-
   return (
     <div className={classes["email-box"]}>
       <div className={classes["email-editor"]}>
-        <Form className={`${classes["compose"]}`} onSubmit={sendEmail}>
+        <Form
+          className={`${classes["compose"]}`}
+          onSubmit={(e) => sendEmail(e, createMarkup(convertedContent))}
+        >
           <Form.Group md="4" controlId="validationCustomUsername">
             <InputGroup hasValidation>
               <InputGroup.Text id="inputGroupPrepend">To:</InputGroup.Text>

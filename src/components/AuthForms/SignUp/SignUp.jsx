@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
+import useAuthAPI from "../../customHooks/useAuthAPI"
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -9,51 +10,13 @@ import keys from "../../../keys";
 import classes from "./SignUp.module.css";
 
 const SignUp = () => {
-  const [isValid, setIsValid] = useState();
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const handleSubmit = async (e) => {
-    setIsValid();
-    e.preventDefault();
-    if (e.target.password.value != e.target.Cpassword.value) {
-      setIsValid(false);
-      alert("Passwords do not match");
-      return;
-    }
-    try {
-      const res = await fetch(`${keys.SignUpUrl}${keys.googleApiKey}`, {
-        method: "post",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          email: e.target.email.value,
-          password: e.target.password.value,
-          returnSecureToken: true,
-        }),
-      });
-      let data = await res.json();
-      console.log("data", data);
-      if (data.error) {
-        alert(data.error.message);
-      } else {
-        e.target.email.value = "";
-        e.target.password.value = "";
-        e.target.Cpassword.value = "";
-        dispatch(authActions.signin({ ...data }));
-        history.replace("/main-page");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  const {handleSignUp}=useAuthAPI()
   return (
     <div className={`${classes["signup-form-container"]}`}>
       <Form
         noValidate
         className={`${classes["signup-form"]}`}
-        onSubmit={handleSubmit}
+        onSubmit={handleSignUp}
       >
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>

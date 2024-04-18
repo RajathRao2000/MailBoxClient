@@ -1,14 +1,13 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Stack from "react-bootstrap/Stack";
 import { GoDotFill } from "react-icons/go";
-// @ts-ignore
 import classes from "./Inbox.module.css";
 import keys from "../../../../keys";
 import { useHistory } from "react-router-dom";
 import ViewEmail from "../ViewEmail/ViewEmail";
 import { useSelector, useDispatch } from "react-redux";
 import { emailActions } from "../../../store/emailSlice";
-import { Button, ButtonGroup } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { MdDeleteForever } from "react-icons/md";
 
 const Inbox = () => {
@@ -26,24 +25,24 @@ const Inbox = () => {
     setEmailDetails(data);
   };
 
-  const getInbox = async () => {
-    const email = JSON.parse(localStorage.getItem("token")).Cemail;
-    if (!email) {
-      history.replace("/login");
-    }
-    console.log(`${keys.firebaseUrl}/${email}/inbox.json`);
-    const res = await fetch(`${keys.firebaseUrl}/${email}/inbox.json`);
-    const data = await res.json();
-    let count = 0;
-    const inboxList = Object.keys(data).map((inboxid) => {
-      const { from, to, date, subject, emailBody, unread } = data[inboxid];
-      if (unread === true) count++;
-      return { from, to, date, subject, emailBody, unread, inboxid };
-    });
-    console.log("inboxlist", inboxList, count);
+  // const getInbox = async () => {
+  //   const email = JSON.parse(localStorage.getItem("token")).Cemail;
+  //   if (!email) {
+  //     history.replace("/login");
+  //   }
+  //   console.log(`${keys.firebaseUrl}/${email}/inbox.json`);
+  //   const res = await fetch(`${keys.firebaseUrl}/${email}/inbox.json`);
+  //   const data = await res.json();
+  //   let count = 0;
+  //   const inboxList = Object.keys(data).map((inboxid) => {
+  //     const { from, to, date, subject, emailBody, unread } = data[inboxid];
+  //     if (unread === true) count++;
+  //     return { from, to, date, subject, emailBody, unread, inboxid };
+  //   });
+  //   console.log("inboxlist", inboxList, count);
 
-    dispatch(emailActions.setInbox({ inboxList, count }));
-  };
+  //   dispatch(emailActions.setInbox({ inboxList, count }));
+  // };
 
   const setEmailRead = async (id, to) => {
     const res = await fetch(
@@ -70,14 +69,8 @@ const Inbox = () => {
       }
     );
     console.log(id, to, res);
-    getInbox();
-
   };
 
-  useEffect(() => {
-    getInbox();
-    setInterval(getInbox,2000)
-  }, []);
   return (
     <div className={classes["inbox-container"]}>
       {viewMsg && (

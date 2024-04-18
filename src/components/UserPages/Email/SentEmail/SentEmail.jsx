@@ -24,28 +24,7 @@ const SentEmail = () => {
       setEmailDetails(data);
     };
   
-    const getSentEmails = async () => {
-      const email = JSON.parse(localStorage.getItem("token")).Cemail;
-      if (!email) {
-        history.replace("/login");
-      }
-      console.log(`${keys.firebaseUrl}/${email}/sent.json`);
-      const res = await fetch(`${keys.firebaseUrl}/${email}/sent.json`);
-      const data = await res.json();
-      const sentEmailList = Object.keys(data).map((sentEmailId) => {
-        const { from, to, date, subject, emailBody, unread } = data[sentEmailId];
-        return { from, to, date, subject, emailBody, unread, inboxid: sentEmailId };
-      });
-      console.log("sentEmaillist", sentEmailList);
-  
-      dispatch(sentEmailActions.setSentEmail({ inboxList: sentEmailList }));
-    };
 
-  
-    useEffect(() => {
-      getSentEmails();
-      setInterval(getSentEmails,2000)
-    }, []);
     return (
       <div className={classes["inbox-container"]}>
         {viewMsg && (
