@@ -12,17 +12,14 @@ const useFirebaseAPI = () => {
     if (!email) {
       history.replace("/login");
     }
-    console.log(`${keys.firebaseUrl}/${email}/inbox.json`);
     const res = await fetch(`${keys.firebaseUrl}/${email}/inbox.json`);
     const data = await res.json();
     let count = 0;
-    const inboxList = Object.keys(data).map((inboxid) => {
+    const inboxList = data?Object.keys(data).map((inboxid) => {
       const { from, to, date, subject, emailBody, unread } = data[inboxid];
       if (unread === true) count++;
       return { from, to, date, subject, emailBody, unread, inboxid };
-    });
-    console.log("inboxlist", inboxList, count);
-
+    }):[]
     dispatch(emailActions.setInbox({ inboxList, count }));
   };
 
@@ -31,10 +28,9 @@ const useFirebaseAPI = () => {
     if (!email) {
       history.replace("/login");
     }
-    console.log(`${keys.firebaseUrl}/${email}/sent.json`);
     const res = await fetch(`${keys.firebaseUrl}/${email}/sent.json`);
     const data = await res.json();
-    const sentEmailList = Object.keys(data).map((sentEmailId) => {
+    const sentEmailList = data?Object.keys(data).map((sentEmailId) => {
       const { from, to, date, subject, emailBody, unread } = data[sentEmailId];
       return {
         from,
@@ -45,14 +41,12 @@ const useFirebaseAPI = () => {
         unread,
         inboxid: sentEmailId,
       };
-    });
-    console.log("sentEmaillist", sentEmailList);
+    }):[];
 
     dispatch(sentEmailActions.setSentEmail({ inboxList: sentEmailList }));
   };
 
-  const sendEmail = async (e, emailBody) => {
-    console.log(emailBody,e)
+  const sendEmail = async (e, emailBody,clearEmailbody) => {
     e.preventDefault();
     const bodyraw = {
       from: JSON.parse(localStorage.getItem("token")).email,
@@ -72,15 +66,14 @@ const useFirebaseAPI = () => {
         body: JSON.stringify(bodyraw),
       });
       let data = await res.json();
-      console.log("data", data);
+      // console.log("data", data);
       if (data.error) {
         alert(data.error.message);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     try {
-      console.log(JSON.parse(localStorage.getItem("token")).email);
       let urlmail = e.target.to.value.replace(/[.@]/g, "");
       const res = await fetch(`${keys.firebaseUrl}/${urlmail}/inbox.json`, {
         method: "post",
@@ -90,16 +83,18 @@ const useFirebaseAPI = () => {
         body: JSON.stringify(bodyraw),
       });
       let data = await res.json();
-      console.log("data", data);
+      // console.log("data", data);
 
       if (data.error) {
         alert(data.error.message);
       }
-      console.log({ ...bodyraw, inboxid: data.name });
       dispatch(emailActions.addEmail({ ...bodyraw, ...data }));
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
+    e.target.to.value=""
+    e.target.subject.value=""
+    // clearEmailbody(<p></p>)
   };
 
   return { getInbox, getSentEmails, sendEmail };

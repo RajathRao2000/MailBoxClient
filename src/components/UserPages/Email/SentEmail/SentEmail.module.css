@@ -22,10 +22,6 @@
 
 .email-bar{
     display: flex;
-    border:solid 1px;
+    border: solid 1px gainsboro;
     padding: 5px 10px;
-    background-color: lightblue;
-    border-radius: 10px;
-
 }
-

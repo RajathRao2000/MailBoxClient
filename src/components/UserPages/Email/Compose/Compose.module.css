@@ -1,5 +1,5 @@
 .wrapper{
-    background-color: black;
+    background-color: gainsboro;
     padding: 20px;
     /* height: 600px; */
     height: 100%;
@@ -10,7 +10,6 @@
 }
 .editor{
     background-color: white;
-    height: 100%;
 }
 .email-editor{
     height: 100%;
@@ -27,6 +26,11 @@
     flex-direction: column;
 }
 
-.compose>button{
+.email-footer>button{
     width: 200px;
+}
+
+.email-footer{
+    /* border: solid; */
+    padding: 10px;
 }

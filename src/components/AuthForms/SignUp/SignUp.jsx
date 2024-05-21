@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { authActions } from "../../store/authSlice";
+import React from "react";
+import { Link } from "react-router-dom";
+
 import useAuthAPI from "../../customHooks/useAuthAPI"
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import keys from "../../../keys";
 import classes from "./SignUp.module.css";
 
 const SignUp = () => {

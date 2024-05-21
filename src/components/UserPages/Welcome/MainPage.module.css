@@ -1,24 +1,35 @@
 .main-page {
   display: flex;
-  height: 100%;
-  border: solid 2px;
+  /* height: 100%; */
+  /* border: solid 2px; */
   width: 100%;
 }
 
 .navigation{
     min-height: 100vh;
-    border: solid 2px;
+    /* border: solid 2px; */
     width: 200px;
+    padding: 10px;
+    border-right: solid gainsboro;
 }
 
 .navigation>a{
   text-decoration: none;
-  border: solid 1px;
+  border-bottom: solid 2px gainsboro;
   padding: 10px 5px;
 }
 
 .view-page {
-  border: solid 2px;
+  /* border: solid 2px; */
   width: 100%;
   position: relative;
+}
+
+.inbox{
+  display: flex;
+  justify-content: space-between;
+}
+
+.active{
+  border-bottom: solid 2px !important;
 }

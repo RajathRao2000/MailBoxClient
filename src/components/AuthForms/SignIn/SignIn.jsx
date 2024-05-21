@@ -1,9 +1,6 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
-import { useDispatch,useSelector } from "react-redux";
-import keys from "../../../keys";
+import { Link } from "react-router-dom";
 
-import { authActions } from "../../store/authSlice";
 import useAuthAPI from "../../customHooks/useAuthAPI";
 
 import Button from "react-bootstrap/Button";

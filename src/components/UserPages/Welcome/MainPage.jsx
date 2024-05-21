@@ -7,12 +7,17 @@ import Compose from "../Email/Compose/Compose";
 import Inbox from "../Email/Inbox/Inbox";
 import { useSelector } from "react-redux";
 import SentEmail from "../Email/SentEmail/SentEmail";
-import useFirebaseAPI from "../../customHooks/useFirebaseAPI"
+import useFirebaseAPI from "../../customHooks/useFirebaseAPI";
+import { MdEdit } from "react-icons/md";
+import { FaInbox } from "react-icons/fa6";
+import { IoSendSharp } from "react-icons/io5";
+
+const iconmargin = { marginRight: "10px" };
 
 const MainPage = () => {
   const auth = useSelector((state) => state.auth);
   const email = useSelector((state) => state.email);
-  const {getInbox,getSentEmails}=useFirebaseAPI()
+  const { getInbox, getSentEmails } = useFirebaseAPI();
 
   useEffect(() => {
     getInbox();
@@ -20,9 +25,9 @@ const MainPage = () => {
     getSentEmails();
     const sentid = setInterval(getSentEmails, 2000);
     return () => {
-      console.log("clearing inbox", inboxid);
+      // console.log("clearing inbox", inboxid);
       clearInterval(inboxid);
-      console.log("clearing getSentEmails", sentid);
+      // console.log("clearing getSentEmails", sentid);
       clearInterval(sentid);
     };
   }, []);
@@ -31,15 +36,28 @@ const MainPage = () => {
     <>
       <section className={classes["main-page"]}>
         <Stack className={classes["navigation"]} gap={3}>
-          <NavLink to={"/main-page/compose"}>Compose</NavLink>
-          <NavLink to={"/main-page/inbox"}>
-            Inbox{email.inboxUnreadcount}
+          <NavLink activeClassName={classes["active"]} to={"/main-page/compose"}>
+            <MdEdit style={iconmargin} size={25} />
+            Compose
           </NavLink>
-          <NavLink to={"/main-page/sent"}>Sent</NavLink>
+          <NavLink activeClassName={classes["active"]} className={classes["inbox"]} to={"/main-page/inbox"}>
+            <span>
+              <FaInbox style={iconmargin} size={25} />
+              Inbox
+            </span>
+            <span>
+              <strong>{email.inboxUnreadcount ?? ""}</strong>
+            </span>
+          </NavLink>
+          <NavLink activeClassName={classes["active"]} to={"/main-page/sent"}>
+            <IoSendSharp style={iconmargin} size={25} />
+            Sent
+          </NavLink>
         </Stack>
         <div className={classes["view-page"]}>
           {auth.isAuthenticated && (
             <>
+            
               <Route path={"/main-page/compose"}>
                 <Compose />
               </Route>

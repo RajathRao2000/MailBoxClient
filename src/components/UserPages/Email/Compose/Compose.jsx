@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { EditorState } from "draft-js";
+import { EditorState, ContentState } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import DOMPurify from "dompurify";
 
@@ -32,13 +32,21 @@ const Compose = () => {
       __html: DOMPurify.sanitize(html),
     };
   }
+  const clearEditor = () => {
+    const emptyContentState = ContentState.createFromText('');
+    const newEditorState = EditorState.push(editorState, emptyContentState);
+    setEditorState(newEditorState);
+  };
 
   return (
     <div className={classes["email-box"]}>
       <div className={classes["email-editor"]}>
         <Form
           className={`${classes["compose"]}`}
-          onSubmit={(e) => sendEmail(e, createMarkup(convertedContent))}
+          onSubmit={(e) => {
+            sendEmail(e, createMarkup(convertedContent))
+            clearEditor()
+          }}
         >
           <Form.Group md="4" controlId="validationCustomUsername">
             <InputGroup hasValidation>
@@ -77,9 +85,11 @@ const Compose = () => {
             editorClassName={classes["editor"]}
             onEditorStateChange={setEditorState}
           />
+          <div className={classes["email-footer"]}>
           <Button variant="primary" type="submit">
             Send <IoSend />
           </Button>
+          </div>
         </Form>
       </div>
       {/* <div
